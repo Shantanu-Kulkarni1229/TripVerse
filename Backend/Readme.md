@@ -279,3 +279,111 @@ The request must include a JSON object with the following structure:
 - The login process generates a new JWT token on each successful login
 - The password field is not included in the response
 
+
+
+
+          
+
+
+
+
+## User Profile Endpoint
+
+### Endpoint: `/users/profile`
+
+**Method:** GET
+
+**Description:**  
+This endpoint retrieves the authenticated user's profile information. The request must include a valid JWT token, either in the `Authorization` header or as a cookie named `token`.
+
+### Headers
+
+- `Authorization: Bearer <jwt_token>` (optional if cookie is set)
+
+### Responses
+
+#### Success Response
+
+**Code:** 200 OK
+
+**Content Example:**
+```json
+{
+  "user": {
+    "_id": "user_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+  }
+}
+```
+
+#### Error Responses
+
+**Code:** 401 Unauthorized  
+**Condition:** If the token is missing, invalid, or expired  
+**Content Example:**
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### Implementation Notes
+
+- Requires authentication via JWT token
+- Returns the user object associated with the token
+
+// ... existing code ...
+
+## User Logout Endpoint
+
+### Endpoint: `/users/logout`
+
+**Method:** GET
+
+**Description:**  
+This endpoint logs out the authenticated user by clearing the authentication token cookie and blacklisting the token.
+
+### Headers
+
+- `Authorization: Bearer <jwt_token>` (optional if cookie is set)
+
+### Responses
+
+#### Success Response
+
+**Code:** 200 OK
+
+**Content Example:**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error Responses
+
+**Code:** 401 Unauthorized  
+**Condition:** If the token is missing, invalid, or already blacklisted  
+**Content Example:**
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### Implementation Notes
+
+- Requires authentication via JWT token
+- The token is blacklisted to prevent reuse
+- The `token` cookie is cleared on logout
+
+// ... existing code ...
+```
+
+This will ensure your API documentation is complete for both `/users/profile` and `/users/logout` endpoints.
+
+        
