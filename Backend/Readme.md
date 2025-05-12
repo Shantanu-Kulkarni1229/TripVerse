@@ -494,17 +494,193 @@ The request must include a JSON object with the following structure:
 {
   "error": "All fields are required"
 }
+
+
+
+
+```
+ 
+
+# Captain Login Endpoint
+
+### Endpoint: `/captains/login`
+
+**Method:** POST
+
+**Description:**  
+This endpoint authenticates existing captains by verifying their email and password. Upon successful authentication, it returns a JWT token along with the captain data.
+
+### Request Body
+
+The request must include a JSON object with the following structure:
+
+```json
+{
+  "email": "john.driver@example.com",
+  "password": "password123"
+}
+```
+
+#### Field Requirements:
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| email | String | Yes | Must be a valid email format |
+| password | String | Yes | Minimum 6 characters |
+
+### Responses
+
+#### Success Response
+
+**Code:** 200 OK
+
+**Content Example:**
+
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "_id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "status": "inactive",
+    "vehicle": {
+      "color": "red",
+      "plate": "MH 21 AB 2024",
+      "capacity": 3,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error Responses
+
+**Code:** 400 Bad Request  
+**Condition:** If validation fails (invalid email or short password)  
+**Content Example:**
+
+```json
+{
+  "errors": [
+    {
+      "value": "test",
+      "msg": "Invalid email address",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
+
+**Code:** 401 Unauthorized  
+**Condition:** If email doesn't exist or password doesn't match  
+**Content Example:**
+
+```json
+{
+  "message": "Invalid credentials"
+}
+```
+
+## Captain Profile Endpoint
+
+### Endpoint: `/captains/profile`
+
+**Method:** GET
+
+**Description:**  
+This endpoint retrieves the authenticated captain's profile information. The request must include a valid JWT token, either in the `Authorization` header or as a cookie named `token`.
+
+### Headers
+
+- `Authorization: Bearer <jwt_token>` (optional if cookie is set)
+
+### Responses
+
+#### Success Response
+
+**Code:** 200 OK
+
+**Content Example:**
+```json
+{
+  "captain": {
+    "_id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "status": "inactive",
+    "vehicle": {
+      "color": "red",
+      "plate": "MH 21 AB 2024",
+      "capacity": 3,
+      "vehicleType": "car"
+    },
+    "location": {
+      "lat": 12.9716,
+      "lng": 77.5946
+    }
+  }
+}
+```
+
+#### Error Responses
+
+**Code:** 401 Unauthorized  
+**Condition:** If the token is missing, invalid, or expired  
+**Content Example:**
+```json
+{
+  "message": "Unauthorized"
+}
 ```
 
 ### Implementation Notes
 
-- Passwords are hashed using bcrypt before storage
-- Authentication tokens are generated using JWT with 24-hour expiration
-- Email addresses must be unique in the system
-- New captains are created with a default status of "inactive"
-- The captain's location fields (lat, lng) are optional
+- Requires authentication via JWT token using the authCaptain middleware
+- Returns the captain object associated with the token
+- The captain's location will be included if available
+
+## Captain Logout Endpoint
+
+### Endpoint: `/captains/logout`
+
+**Method:** GET
+
+**Description:**  
+This endpoint logs out the authenticated captain by clearing the authentication token cookie and blacklisting the token.
+
+### Headers
+
+- `Authorization: Bearer <jwt_token>` (optional if cookie is set)
+
+### Responses
+
+#### Success Response
+
+**Code:** 200 OK
+
+**Content Example:**
+```json
+{
+  "message": "Logged out succesfully"
+}
 ```
 
-This documentation follows the same format as your existing user endpoints documentation and includes all the necessary details about the captain registration endpoint based on your code.
+#### Error Responses
 
-        
+**Code:** 401 Unauthorized  
+**Condition:** If the token is missing, invalid, or already blacklisted  
+**Content Example:**
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
