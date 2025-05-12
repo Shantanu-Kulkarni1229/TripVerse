@@ -381,9 +381,130 @@ This endpoint logs out the authenticated user by clearing the authentication tok
 - The token is blacklisted to prevent reuse
 - The `token` cookie is cleared on logout
 
-// ... existing code ...
+
+
+    
+
+## Captain Registration Endpoint
+
+### Endpoint: `/captains/register`
+
+**Method:** POST
+
+**Description:**  
+This endpoint allows new captains to register for the Uber Clone application. It creates a new captain account with vehicle details, hashes the password for security, and returns an authentication token along with the captain data.
+
+### Request Body
+
+The request must include a JSON object with the following structure:
+
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.driver@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "red",
+    "plate": "MH 21 AB 2024",
+    "capacity": 3,
+    "vehicleType": "car"
+  }
+}
 ```
 
-This will ensure your API documentation is complete for both `/users/profile` and `/users/logout` endpoints.
+#### Field Requirements:
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| fullname.firstname | String | Yes | Minimum 3 characters |
+| fullname.lastname | String | No | Minimum 3 characters if provided |
+| email | String | Yes | Must be a valid email format |
+| password | String | Yes | Minimum 6 characters |
+| vehicle.color | String | Yes | Minimum 3 characters |
+| vehicle.plate | String | Yes | Minimum 3 characters |
+| vehicle.capacity | Number | Yes | Minimum 1 |
+| vehicle.vehicleType | String | Yes | Must be one of: 'car', 'motorcycle', 'auto' |
+
+### Responses
+
+#### Success Response
+
+**Code:** 201 Created
+
+**Content Example:**
+
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "_id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "status": "inactive",
+    "vehicle": {
+      "color": "red",
+      "plate": "MH 21 AB 2024",
+      "capacity": 3,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error Responses
+
+**Code:** 400 Bad Request  
+**Condition:** If validation fails (invalid email, short firstname, short password, etc.)  
+**Content Example:**
+
+```json
+{
+  "errors": [
+    {
+      "value": "ab",
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+**Code:** 400 Bad Request  
+**Condition:** If captain with the same email already exists  
+**Content Example:**
+
+```json
+{
+  "message": "Captain already exist"
+}
+```
+
+**Code:** 500 Internal Server Error  
+**Condition:** If there's a server error during captain creation  
+**Content Example:**
+
+```json
+{
+  "error": "All fields are required"
+}
+```
+
+### Implementation Notes
+
+- Passwords are hashed using bcrypt before storage
+- Authentication tokens are generated using JWT with 24-hour expiration
+- Email addresses must be unique in the system
+- New captains are created with a default status of "inactive"
+- The captain's location fields (lat, lng) are optional
+```
+
+This documentation follows the same format as your existing user endpoints documentation and includes all the necessary details about the captain registration endpoint based on your code.
 
         
