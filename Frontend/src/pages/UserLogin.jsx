@@ -42,9 +42,10 @@ const UserLogin = () => {
           <button className='bg-[#111111] mb-2 rounded px-4 py-2 font-semibold  w-full text-lg placeholder:text-base text-white  '>Login</button>
         <p className='text-center'>New Here? <Link to="/signup" className='text-blue-600'>Create New Account</Link></p>
         </form>
+
       </div>
       <div>
-        <Link to="/captain-" className='bg-[#111111] flex items-center justify-center  mb-5 rounded px-4 py-2 font-semibold  w-full text-lg placeholder:text-base text-white  '>Sign in as Captain </Link>
+        <Link to="/captain-login" className='bg-[#111111] flex items-center justify-center  mb-5 rounded px-4 py-2 font-semibold  w-full text-lg placeholder:text-base text-white  '>Sign in as Captain </Link>
       </div>
 
     </div>
