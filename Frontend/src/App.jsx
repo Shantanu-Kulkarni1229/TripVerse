@@ -11,7 +11,7 @@ const App = () => {
     <div>
       <Routes>
         <Route path='/' element={<Home/>} />
-        <Route path='/login' element={<UserLogin/>} />
+        <Route path='/login' element={<UserLogin />} />
         <Route path='/signup' element={<UserSignup/>} />  
         <Route path='/captain-login' element={<CaptainLogin/>} />
         <Route path='/captain-signup' element={<CaptainSignup/>} />
@@ -21,3 +21,4 @@ const App = () => {
 }
 
 export default App
+
